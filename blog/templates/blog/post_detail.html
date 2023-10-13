@@ -1,0 +1,97 @@
+{% extends 'blog/base.html' %}
+
+{% block content %}
+<div class="card border-0" style="margin-left: 150px; margin-right: 185px;">
+    {% if post.featured_image %}
+    <img src="{{ post.featured_image.url }}" alt="Featured Image" style="height: 500px; width: 1500px;">
+    {% endif %}
+    <article class="post">
+        <aside class="actions">
+
+            {% if user.is_authenticated %}
+            <a class="btn btn-secondary" href="{% url 'post_edit' slug=post.slug %}">
+                {% include './icons/pencil-fill.svg' %}
+            </a>
+            {% endif %}
+        </aside>
+
+        {% if post.published_date %}
+        <time class="date">
+            {{ post.published_date }}
+        </time>
+        {% endif %}
+        <br>
+        <h2>
+            {% if post.thumbnail_image %}
+            <img src="{{ post.thumbnail_image.url }}" alt="Thumbnail Image"
+                style="height: 50px; width: 50px; border-radius: 50%;">
+            {% endif %}
+            {{ post.title }}
+        </h2>
+        <div id="d" style="margin-left:1.5cm;">
+            <p>Category: {{ post.category.name }}</p>
+            <p>{{ post.text|linebreaksbr }}</p>
+            <p>Tag: {% for tag in post.tag.all %}{{ tag.name }}{% if not forloop.last %}, {% endif %}{% endfor %}</p>
+            <p>Author: {{ post.author.username }}</p>
+        </div>
+
+
+       
+            <h2>Add a new comment</h2>
+            <form action="." method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit">Add comment</button>
+            </form>
+        
+
+        {% for comment in comments %}
+        <div class="card border-0">
+            <p class="info">{{ comment.user }} | {{ comment.email }} | {{ comment.published_date }}</p>
+            {{ comment.text|linebreaks }}
+
+            <div class="ms-5">
+                {% for reply in comment.replies.all %}
+                <p class="info">{{ reply.user }} | {{ reply.email }} | {{ reply.published_date }}</p>
+                <li>{{ reply.text }}</li>
+
+
+                {% endfor %}
+
+                <form action="." method="post" id="main_form{{ forloop.counter}}" class="reply_form">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <input type="hidden" name="comment_id" value="{{ comment.pk }}">
+                    <input class="btn btn-primary" type="submit" value="Reply">
+                </form>
+
+                <button id="mybutton" data-id="{{ forloop.counter}}" type="toggle" value="Reply"
+                    class="btn btn-primary s">reply here</button>
+
+            </div>
+        </div>
+        {% empty %}
+        <h4>There are no comments yet.</h4>
+        {% endfor %}
+
+
+
+    </article>
+</div>
+{% endblock %}
+
+{% block script %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $(".reply_form").hide()
+
+        $(".s ").on('click', function () {
+            $(this).parent().find(".reply_form").toggle()
+
+        });
+    });
+
+</script>
+{% endblock %}

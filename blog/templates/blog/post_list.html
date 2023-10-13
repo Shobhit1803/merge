@@ -1,0 +1,47 @@
+{% extends 'blog/base.html' %}
+
+{% block content %}
+
+
+    <div class="row" style="margin-left: 150px;">
+        {% for post in posts %}
+    <div class="col-6">
+    <div class="card border-0" style="height: 700px;  width: 40rem;">
+
+        
+        {% if post.featured_image %}
+        <img class="card-img" src="{{ post.featured_image.url }}" alt="Card image cap">
+        {% endif %}
+        <article class="post">
+            <time class="date">
+                {{ post.published_date }}
+            </time>
+            <br>
+            <h2>
+
+                {% if post.thumbnail_image %}
+                <img src="{{ post.thumbnail_image.url }}" alt="Thumbnail Image"
+                    style="height: 50px; width: 50px; border-radius: 50%;">
+                {% endif %}
+                <a href="{% url 'post_detail' slug=post.slug %}">{{ post.title }}</a>
+            </h2>
+            <a href="{% url 'post_category' id=post.category.id %}">Category: {{ post.category }}</a>
+            <p>{{ post.text|linebreaksbr }}</p>
+            <p>Tag: {% for tag in post.tag.all %}
+                <a href="{% url 'post_Tag' id=tag.id %}">{{ tag.name }}</a>
+                {% endfor %}
+            </p>
+            <a href="{% url 'post_author' id=post.author.id %}">Author: {{ post.author.username }}</a>
+
+
+        </article>
+    </span>
+        </div>
+
+    </div>
+
+
+
+ {% endfor %}
+</div>
+{% endblock %}

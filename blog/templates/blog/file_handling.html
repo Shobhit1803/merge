@@ -1,0 +1,21 @@
+{% extends 'blog/base.html' %}
+
+{% block content %}
+
+<h1>File Handling</h1>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Upload</button>
+    </form>
+    <h2>Uploaded Files</h2>
+    <ul>
+        {% for file in files %}
+        <li>
+            <a href="{% url 'edit_file' file.id %}">{{ file.title }}</a>
+        </li>
+        {% endfor %}
+    </ul>
+    
+
+{% endblock %}

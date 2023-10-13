@@ -1,0 +1,18 @@
+{% extends 'blog/base.html' %}
+
+{% block content %}
+    <div class="text-center">
+        {% if user_profile.image %}
+        <img src="{{ user_profile.image.url }}" alt="profile image">
+        {% else %}
+        <p>No profile image available.</p>
+        {% endif %}
+        <h1>Profile</h1>
+        <p>Username: {{ user_profile.username }}</p>
+        <!-- Display additional profile information here -->
+        <p>email: {{ user_profile.email }}</p>
+        <p>gender: {{ user_profile.gender }}</p>
+        <p>bio: {{user_profile.bio }}</p>
+        <a href="{% url 'profile_edit' %}">Edit Profile</a>
+    </div>
+{% endblock %}
